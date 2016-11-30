@@ -1,63 +1,130 @@
-USE [exercice-edt];
-CREATE TABLE Eleve (
+USE [exo_edt];
+
+
+CREATE TABLE Formation (
 	nom VARCHAR(40) NOT NULL,
-	prenom VARCHAR(40)NOT NULL,
-	mail VARCHAR(50) NOT NULL,
+	nbHeureTotale FLOAT(5) NULL,
+	id INTEGER UNIQUE NOT NULL,
 
-	--PRIMARY KEY (mail)
-);
-
-CREATE TABLE Formateur (
-	nom VARCHAR(40)NOT NULL,
-	prenom VARCHAR(40) NOT NULL,
-	mail VARCHAR(50) NOT NULL,
-	telephone CHAR(10) NULL,
-
-	--PRIMARY KEY (mail, telephone)
+	PRIMARY KEY (id)
 );
 
 CREATE TABLE Promotion (
 	nom VARCHAR(40) NOT NULL,
 	dateDebut DATE NOT NULL,
 	dateFin DATE NOT NULL,
+	id INTEGER UNIQUE NOT NULL,
+	formation_id INTEGER UNIQUE NOT NULL,
 
-	--PRIMARY KEY (nom)
+	PRIMARY KEY (id),
+	CONSTRAINT Promotion_Formation_fk
+		FOREIGN KEY	(formation_id)
+		REFERENCES Formation (id)
 );
 
-CREATE TABLE Formation (
+CREATE TABLE Eleve (
 	nom VARCHAR(40) NOT NULL,
-	nbHeureTotale FLOAT(5) NULL,
+	prenom VARCHAR(40)NOT NULL,
+	mail VARCHAR(50) UNIQUE NOT NULL,
+	id INTEGER UNIQUE NOT NULL,
+	promotion_id INTEGER UNIQUE NOT NULL,
 
-	--PRIMARY KEY (nom)
+	PRIMARY KEY (id),
+	CONSTRAINT Eleve_Promotion_fk
+		FOREIGN KEY (promotion_id)
+		REFERENCES Promotion (id)
+);
+
+CREATE TABLE Formateur (
+	nom VARCHAR(40)NOT NULL,
+	prenom VARCHAR(40) NOT NULL,
+	mail VARCHAR(50) UNIQUE NOT NULL,
+	telephone CHAR(10) UNIQUE NULL,
+	id INTEGER UNIQUE NOT NULL,
+
+	PRIMARY KEY (id)
 );
 
 CREATE TABLE Matiere(
 	nom VARCHAR(40) NOT NULL,
+	id INTEGER UNIQUE NOT NULL, 
 
-	--PRIMARY KEY (nom)
+	PRIMARY KEY (id)
 );
 
-CREATE TABLE SALLE (
+CREATE TABLE matiere_formation(
+	id_matiere INTEGER NOT NULL,
+	id_formation INTEGER NOT NULL,
+
+	PRIMARY KEY (id_matiere, id_formation),
+	CONSTRAINT matiere_formation_id_matiere_fk
+		FOREIGN KEY (id_matiere)
+		REFERENCES Matiere (id),
+	CONSTRAINT matiere_formation_id_formation_fk
+		FOREIGN KEY (id_formation)
+		REFERENCES Formation (id)
+);
+
+CREATE TABLE matiere_formateur(
+	id_matiere INTEGER NOT NULL,
+	id_formateur INTEGER NOT NULL,
+
+	PRIMARY KEY (id_matiere, id_formateur),
+	CONSTRAINT matiere_formateur_id_matiere_fk
+		FOREIGN KEY (id_matiere)
+		REFERENCES Matiere (id),
+	CONSTRAINT matiere_formateur_id_formateur_fk
+		FOREIGN KEY (id_formateur)
+		REFERENCES Formateur (id)
+);
+
+CREATE TABLE Salle (
 	nom VARCHAR(40) NOT NULL,
-	capacité INTEGER NOT NULL,
+	capacite INTEGER NOT NULL,
+	id INTEGER UNIQUE NOT NULL,
 
-	--PRIMARY KEY (nom)
+	PRIMARY KEY (id),
+	CONSTRAINT salle_unique UNIQUE (nom, capacite)
 );
+
 
 CREATE TABLE Cours (
 	dateDebut DATE NOT NULL,
 	dateFin DATE NOT NULL,
 	id INTEGER NOT NULL,
+	salle_id INTEGER NOT NULL,
+	formateur_id INTEGER NOT NULL,
+	promotion_id INTEGER NOT NULL,
+	matiere_id INTEGER NOT NULL,
 
-	--PRIMARY KEY (id) 
+	PRIMARY KEY (id),
+	CONSTRAINT cours_salle_fk
+		FOREIGN KEY (salle_id)
+		REFERENCES Salle (id),
+	CONSTRAINT cours_formateur_fk
+		FOREIGN KEY (formateur_id)
+		REFERENCES Formateur (id),
+	CONSTRAINT cours_promotion_fk
+		FOREIGN KEY (promotion_id)
+		REFERENCES Promotion (id),
+	CONSTRAINT cours_matiere_fk
+		FOREIGN KEY (matiere_id)
+		REFERENCES Matiere (id),	
 );
 
-CREATE TABLE EmploiDuTemps (
-	dateDebut DATE NOT NULL,
-	dateFin DATE NOT NULL
-	id INTEGER NOT NULL,
+CREATE TABLE Absence (
+	id_eleve INTEGER NOT NULL,
+	id_cours INTEGER NOT NULL,
+	
+	PRIMARY KEY (id_eleve, id_cours),
+	CONSTRAINT Absence_eleve_fk
+		FOREIGN KEY (id_eleve)
+		REFERENCES Eleve (id),
+	CONSTRAINT Absence_cours_fk
+		FOREIGN KEY (id_cours)
+		REFERENCES Cours (id)
 
-	--PRIMARY KEY (id)
+
 );
 
 --CREATE TABLE Absence ();
