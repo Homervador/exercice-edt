@@ -112,3 +112,53 @@ FROM Commande
 	INNER JOIN Categorie ON Produit.idCategorie = Categorie.id
 WHERE 1!= 0
 ORDER BY Commande.id 
+
+
+SELECT DISTINCT
+	CONCAT (Client.nom, ' ', Client.prenom) AS 'Client ayant commander au moin 10x le même article en une commande'
+FROM Client
+	INNER JOIN Commande ON Commande.idClient = Client.id
+	INNER JOIN LigneDeCommande ON LigneDeCommande.idCommande = Commande.id
+WHERE LigneDeCommande.quantite > 9
+
+
+USE produit;
+GO
+SELECT COUNT(*) FROM Client;
+
+SELECT * FROM ligneDeCommande 
+
+SELECT idCommande, COUNT(*)
+FROM LigneDeCommande
+GROUP BY idCommande;
+
+--Nb de commandes par clients
+SELECT Client.nom, COUNT(*)
+FROM Commande
+	INNER JOIN Client ON Commande.idClient = Client.id
+GROUP BY Client.nom;
+
+--Nb total de produits commander par clients
+SELECT Client.nom, SUM(quantite)
+FROM LigneDeCommande
+	INNER JOIN Commande ON Commande.id = LigneDeCommande.idCommande
+	INNER JOIN Client ON Commande.idClient = Client.id
+GROUP BY Client.nom;
+
+--Nb de produits différents commander par clients
+SELECT Client.nom, COUNT(quantite)
+FROM LigneDeCommande
+	INNER JOIN Commande ON Commande.id = LigneDeCommande.idCommande
+	INNER JOIN Client ON Commande.idClient = Client.id
+GROUP BY Client.nom;
+
+--Nb de clients qui on commande des produits, par categories
+SELECT Categorie.libelle, COUNT(distinct idClient) AS 'Nombre de client'
+FROM Client
+	INNER JOIN Commande ON Commande.idClient = Client.id
+	INNER JOIN LigneDeCommande ON LigneDeCommande.idCommande = Commande.id
+	INNER JOIN Produit ON LigneDeCommande.idProduit = Produit.id
+	INNER JOIN Categorie ON Produit.idCategorie = Categorie.id
+GROUP BY Categorie.libelle;
+
+
