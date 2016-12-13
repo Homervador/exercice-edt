@@ -1,6 +1,6 @@
 CREATE TABLE Categorie(
 	id INT NOT NULL IDENTITY PRIMARY KEY,
-	libelles VARCHAR(50),
+	libelle VARCHAR(50),
 	
 );
 
@@ -17,7 +17,7 @@ CREATE TABLE Produit(
 CREATE TABLE Client(
 	id INT NOT NULL IDENTITY PRIMARY KEY,
 	nom VARCHAR(50)NOT NULL,
-	prénom VARCHAR(50) NOT NULL, 
+	prenom VARCHAR(50) NOT NULL, 
 	mail VARCHAR(70) UNIQUE NOT NULL, 
 );
 
@@ -31,7 +31,6 @@ CREATE TABLE Commande(
 );
 
 CREATE TABLE LigneDeCommande(
-	id INT NOT NULL IDENTITY PRIMARY KEY,
 	quantite INT NOT NULL,
 	idProduit INTEGER,
 	idCommande INTEGER,
@@ -40,7 +39,8 @@ CREATE TABLE LigneDeCommande(
 		REFERENCES Produit (id),
 	CONSTRAINT ligneDeCommande_commande_fk
 		FOREIGN KEY (idCommande)
-		REFERENCES Commande (id)
+		REFERENCES Commande (id),
+	PRIMARY KEY (idProduit, idCommande)
 );
 
 

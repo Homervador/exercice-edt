@@ -6,7 +6,7 @@ VALUES (1,'FRUITS');
 INSERT INTO Categorie (id,libelles)
 VALUES (2,'LEGUMES');
 
-INSERT INTO Categorie (Libelles,id)
+INSERT INTO Categorie (Libelle,id)
 VALUES ('GATEAUX',3);
 
 --INSERT INTO Categorie (id,Libelles)
@@ -32,7 +32,7 @@ INSERT INTO Produit (id,nom,code,idCategorie)
 VALUES(4,'choux',45678,2);
 
 INSERT INTO Produit (id,nom,code,idCategorie)
-VALUES(5,'pomme',56789,1);;
+VALUES(5,'pomme',56789,1);
 
 INSERT INTO Produit (id,nom,code,idCategorie)
 VALUES(6,'glaces',67890,4);
@@ -86,3 +86,29 @@ CONCAT(nom, ' (',code,') ') AS Produit
 FROM categorie, produit
 WHERE categorie.id = produit.idCategorie
 ORDER BY Categorie.libelles, Produit.nom
+
+-- Pour éviter le produit cartésien, on effectu une jointure interne
+SELECT
+	libelles AS 'Nom de catégorie',
+	CONCAT(nom, ' (', code, ' )')AS produit
+FROM Categorie
+	INNER JOIN Produit ON Categorie.id = Produit.idCategorie
+ORDER BY Categorie.libelles
+
+
+INSERT INTO LigneDeCommande (quantite)
+VALUE (3);
+
+SELECT
+	Commande.id AS 'Numéro de commande',
+	CONCAT(Client.nom, ' ', Client.prenom) AS 'Nom du client',
+	Commande.adresseDeLivraison AS 'Adresse de livraison',
+	CONCAT(Categorie.libelle, ' ', Produit.nom, ' (', Produit.code, ')') AS 'Produit Commandé',
+	LigneDeCommande.quantite AS 'Quantité commandée'
+FROM Commande
+	INNER JOIN Client ON Commande.idClient = Client.id
+	INNER JOIN LigneDeCommande ON LigneDeCommande.idCommande = Commande.id
+	INNER JOIN Produit ON LigneDeCommande.idProduit = Produit.id
+	INNER JOIN Categorie ON Produit.idCategorie = Categorie.id
+WHERE 1!= 0
+ORDER BY Commande.id 
