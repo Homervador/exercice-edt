@@ -36,10 +36,12 @@ INSERT INTO Commande (id,adresseDeLivraison, idClient) VALUES
 	(4, 'adresse4', 2),
 	(5, 'adresse5', 3),
 	(6, 'adresse3', 1),
-	(7, 'adresse1', 4)
+	(7, 'adresse1', 4),
+	(8, 'adresse1', 1)
 SET IDENTITY_INSERT Commande OFF;
 
 INSERT INTO LigneDeCommande (quantite, idProduit, idCommande) VALUES
+	(3,8,8),
 	(2,5,1),
 	(5,3,2),
 	(3,8,3),
